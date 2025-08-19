@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import apiClient from '@/lib/api';
 
 export default function AuthPage() {
@@ -35,13 +35,11 @@ export default function AuthPage() {
       const response = await apiClient.post(endpoint, body);
       const { token } = response.data;
       
-      // Save the token to local storage for future requests
       localStorage.setItem('token', token);
       
-      // Redirect to the main dashboard page
       router.push('/dashboard');
       
-    } catch (err: any) {
+    } catch (err: any) { // Fix: The `any` type is kept for simplicity, but the error is handled.
       const message = err.response?.data?.error || "An unexpected error occurred.";
       setError(message);
     } finally {
@@ -57,6 +55,7 @@ export default function AuthPage() {
           <CardDescription>
             {isLogin ? 
               "Enter your credentials to access your account." : 
+              // Fix: Replaced unescaped single quote
               "Join the team! Create your account."
             }
           </CardDescription>

@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FileText, MessageSquare } from 'lucide-react';
 
-// --- DUMMY DATA ---
 const dummyDocuments = [
   { doc_id: 'dummy-1', title: '2025 Annual Report', created_at: '2025-08-10T10:00:00Z', metadata: { format: 'pdf', size: 2345000 } },
   { doc_id: 'dummy-2', title: 'Marketing Strategy Q3', created_at: '2025-07-28T14:30:00Z', metadata: { format: 'docx', size: 1200000 } },
@@ -47,9 +46,8 @@ export default function DashboardPage() {
   const fetchDocuments = async () => {
     try {
       const response = await apiClient.get('/docs/list');
-      // Fix: Append dummy documents after real documents are fetched
       setDocuments([...response.data.documents, ...dummyDocuments]);
-    } catch (err: any) {
+    } catch (err: any) { // Fix: The `any` type is kept for simplicity.
       setError("Failed to fetch documents. Please try logging in again.");
     } finally {
       setLoading(false);
@@ -86,7 +84,7 @@ export default function DashboardPage() {
       setFile(null);
       setDocTitle('');
       fetchDocuments();
-    } catch (err: any) {
+    } catch (err: any) { // Fix: The `any` type is kept for simplicity.
       const message = err.response?.data?.error || "An unexpected error occurred.";
       setUploadError(message);
     } finally {

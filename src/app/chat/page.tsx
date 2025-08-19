@@ -5,9 +5,9 @@ import apiClient from '@/lib/api';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SendHorizonal } from 'lucide-react';
 
-// Message interface to store chat history
 interface ChatMessage {
   id: number;
   role: 'user' | 'assistant';
@@ -15,8 +15,14 @@ interface ChatMessage {
   sources?: string[];
 }
 
+const dummyMessages: ChatMessage[] = [
+  { id: 1, role: 'assistant', content: 'Hi there! I am your AI-powered knowledge assistant. How can I help you today?', sources: [] },
+  { id: 2, role: 'user', content: 'What is the refund policy?', sources: [] },
+  { id: 3, role: 'assistant', content: 'Refunds are allowed within 30 days of purchase, provided the item is in its original condition. For all returns, a valid receipt or proof of purchase is required.', sources: ['docs/policy.pdf#section2', 'docs/policy.pdf#section3'] }
+];
+
 export default function ChatPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(dummyMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +49,7 @@ export default function ChatPage() {
       };
       setMessages(prev => [...prev, newAssistantMessage]);
       
-    } catch (err) {
+    } catch (err: any) { // Fix: The `any` type is kept for simplicity.
       setError("Failed to get a response from the AI. Please try again.");
     } finally {
       setLoading(false);
@@ -53,29 +59,31 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] bg-slate-50">
       <div className="flex-grow p-6 overflow-y-auto">
-        {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">Ask a question about your documents...</p>
-          </div>
-        )}
         {messages.map((msg) => (
           <div key={msg.id} className={`mb-4 flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <Card className={`max-w-xl ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
-              <CardContent className="p-4">
-                <p className="font-semibold">{msg.role === 'user' ? 'You' : 'AI'}:</p>
-                <p className="mt-1">{msg.content}</p>
-                {msg.sources && msg.sources.length > 0 && (
-                  <div className="mt-2 text-xs">
-                    <p className="font-semibold">Sources:</p>
-                    <ul className="list-disc list-inside">
-                      {msg.sources.map((source, index) => (
-                        <li key={index}>{source}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <div className={`flex items-start space-x-3 max-w-xl ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+              <Avatar>
+                <AvatarFallback className={msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-500 text-white'}>
+                  {msg.role === 'user' ? 'You' : 'AI'}
+                </AvatarFallback>
+              </Avatar>
+              <Card className={`flex-1 ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-white'}`}>
+                <CardContent className="p-4">
+                  <p className="font-semibold mb-1">{msg.role === 'user' ? 'You' : 'AI'}:</p>
+                  <p>{msg.content}</p>
+                  {msg.sources && msg.sources.length > 0 && (
+                    <div className="mt-2 text-xs text-gray-400">
+                      <p className="font-semibold">Sources:</p>
+                      <ul className="list-disc list-inside">
+                        {msg.sources.map((source, index) => (
+                          <li key={index}>{source}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         ))}
         {loading && (
