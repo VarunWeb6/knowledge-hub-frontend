@@ -5,7 +5,7 @@ import apiClient from '@/lib/api';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Fix: Removed AvatarImage import
 import { SendHorizonal } from 'lucide-react';
 
 interface ChatMessage {
